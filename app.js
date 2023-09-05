@@ -4,28 +4,27 @@ const path = require('path');
 
 const app = express();
 
+const bodyparser = require('body-parser');
+
 const adminRoute = require('./Routes/admin.js');
 const shopRoute = require('./Routes/shop.js');
 const contactRoute = require('./Routes/contact.js');
+const successRoute = require('./Routes/success');
+const notfoundRoute = require('./Routes/notfound');
 
 
-const bodyparser = require('body-parser');
 
 app.use(bodyparser.urlencoded({extended: false}));
+
+app.use(express.static(path.join(__dirname,'public')));
 
 app.use('/shop',shopRoute);
 app.use('/admin',adminRoute);
 app.use(contactRoute);
+app.use(successRoute);
+app.use(notfoundRoute);
 
-app.use(express.static(path.join(__dirname,'public')));
 
-app.post('/success',(req, res, next) => {
-    console.log(req.body);
-    res.send(`<h1>Form filled successfully</h1>`)
-})
 
-app.use( (req, res, next) => {
-    res.status(404).sendFile(path.join(__dirname, 'views','notFound.html'))
-})
 
 app.listen(4000);
