@@ -1,30 +1,28 @@
-const express = require('express');
-
 const path = require('path');
+
+const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
-const bodyparser = require('body-parser');
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
-const adminRoute = require('./Routes/admin.js');
-const shopRoute = require('./Routes/shop.js');
-const contactRoute = require('./Routes/contact.js');
-const successRoute = require('./Routes/success');
-const notfoundRoute = require('./Routes/notfound');
+const adminRoute = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const contactRoute = require('./routes/contact');
+const successRoute = require('./routes/success');
+const errorController = require('./controllers/notfound');
 
+app.use(bodyParser.urlencoded({ extended: false }));
 
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(bodyparser.urlencoded({extended: false}));
-
-app.use(express.static(path.join(__dirname,'public')));
-
-app.use('/shop',shopRoute);
-app.use('/admin',adminRoute);
+app.use('/admin', adminRoute);
+app.use(shopRoutes);
 app.use(contactRoute);
 app.use(successRoute);
-app.use(notfoundRoute);
 
+app.use(errorController.notfound);
 
-
-
-app.listen(4000);
+app.listen(3000);
